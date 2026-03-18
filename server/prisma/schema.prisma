@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  balance   Float    @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  products    Product[]    @relation("CreatedBy")
+  cart        Cart[]
+  orders      Order[]
+  transactions Transaction[]
+  rentals     Rental[]
+
+  @@map("users")
+}
+
+model Product {
+  id             Int       @id @default(autoincrement())
+  name           String
+  price          String
+  description    String?
+  status         String    @default("new")
+  image          String?
+  imageFilename  String?   @map("image_filename")
+  category       String    @default("other")
+  brand          String?
+  specs          String?
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  createdById    Int?
+  createdBy      User?     @relation("CreatedBy", fields: [createdById], references: [id])
+  cart           Cart[]
+  orderItems     OrderItem[]
+  rentals        Rental[]
+
+  @@map("products")
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("cart")
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  totalAmount Float    @map("total_amount")
+  status      String   @default("completed")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id           Int     @id @default(autoincrement())
+  orderId      Int
+  productId    Int
+  productName  String  @map("product_name")
+  productPrice Float   @map("product_price")
+  quantity     Int
+  subtotal     Float
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model Transaction {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  type         String
+  amount       Float
+  balanceBefore Float  @map("balance_before")
+  balanceAfter Float  @map("balance_after")
+  description  String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}
+
+model Rental {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  productId       Int
+  startDate       DateTime @default(now()) @map("start_date")
+  endDate         DateTime @map("end_date")
+  daysCount       Int      @map("days_count")
+  totalPrice      Float    @map("total_price")
+  deposit         Float    @default(0)
+  depositReturned Boolean  @default(false) @map("deposit_returned")
+  status          String   @default("active") // active, completed, overdue, cancelled
+  createdAt       DateTime @default(now()) @map("created_at")
+  
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("rentals")
+}

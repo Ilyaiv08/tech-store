@@ -1,0 +1,721 @@
+/*reset style*/
+
+/**
+  Нормализация блочной модели
+ */
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+/**
+  Убираем внутренние отступы слева тегам списков,
+  у которых есть атрибут class
+ */
+:where(ul, ol):where([class]) {
+    padding-left: 0;
+}
+
+/**
+  Убираем внешние отступы body и двум другим тегам,
+  у которых есть атрибут class
+ */
+body,
+:where(blockquote, figure):where([class]) {
+    margin: 0;
+}
+
+/**
+  Убираем внешние отступы вертикали нужным тегам,
+  у которых есть атрибут class
+ */
+:where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  dl
+):where([class]) {
+    margin-block: 0;
+}
+
+:where(dd[class]) {
+    margin-left: 0;
+}
+
+:where(fieldset[class]) {
+    margin-left: 0;
+    padding: 0;
+    border: none;
+}
+
+/**
+  Убираем стандартный маркер маркированному списку,
+  у которого есть атрибут class
+ */
+:where(ul[class]) {
+    list-style: none;
+}
+
+:where(address[class]) {
+    font-style: normal;
+}
+
+/**
+  Обнуляем вертикальные внешние отступы параграфа,
+  объявляем локальную переменную для внешнего отступа вниз,
+  чтобы избежать взаимодействие с более сложным селектором
+ */
+p {
+    --paragraphMarginBottom: 24px;
+
+    margin-block: 0;
+}
+
+/**
+  Внешний отступ вниз для параграфа без атрибута class,
+  который расположен не последним среди своих соседних элементов
+ */
+p:where(:not([class]):not(:last-child)) {
+    margin-bottom: var(--paragraphMarginBottom);
+}
+
+
+/**
+  Упрощаем работу с изображениями
+ */
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/**
+  Наследуем свойства шрифт для полей ввода
+ */
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+html {
+    /**
+      Пригодится в большинстве ситуаций
+      (когда, например, нужно будет "прижать" футер к низу сайта)
+     */
+    height: 100%;
+}
+
+/**
+  Плавный скролл
+ */
+html,
+:has(:target) {
+    scroll-behavior: smooth;
+}
+
+body {
+    /**
+      Пригодится в большинстве ситуаций
+      (когда, например, нужно будет "прижать" футер к низу сайта)
+     */
+    min-height: 100%;
+    /**
+      Унифицированный интерлиньяж
+     */
+    line-height: 1.5;
+}
+
+/**
+  Приводим к единому цвету svg-элементы
+ */
+svg *[fill] { fill: currentColor }
+svg *[stroke] { stroke: currentColor }
+
+/**
+  Чиним баг задержки смены цвета при взаимодействии с svg-элементами
+ */
+svg * {
+    transition-property: fill, stroke;
+}
+
+/**
+  Удаляем все анимации и переходы для людей,
+  которые предпочитают их не использовать
+ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+:root {
+    --color-bg: #0f172a;
+    --color-surface: #1e293b;
+    --color-surface-alt: #334155;
+    --color-white: #f8fafc;
+    --color-dark: #0f172a;
+    --color-accent: #f59e0b;
+    --color-accent-hover: #d97706;
+    --color-muted: #94a3b8;
+    --color-border: #475569;
+
+    --border-radius: 12px;
+    --border-radius-lg: 20px;
+
+    --font-family-base: "Segoe UI", system-ui, sans-serif;
+
+    --container-width: 1355px;
+    --container-padding-x: 15px;
+
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --shadow-btn: 0 2px 10px rgba(245, 158, 11, 0.35);
+}
+
+body {
+    font-family: var(--font-family-base);
+    color: var(--color-white);
+    font-size: 16px;
+    background-color: var(--color-bg);
+}
+
+.container {
+    max-width: calc(var(--container-width) + var(--container-padding-x) * 2);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+a {
+    color: var(--color-white);
+    text-decoration: none;
+}
+
+/*nav block*/
+
+.header-menu-list {
+    display: flex;
+    column-gap: 50px;
+}
+
+.header-menu-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+}
+
+.header-menu-link:hover {
+    color: var(--color-white);
+}
+
+.header-action {
+    display: flex;
+    column-gap: 20px;
+}
+
+.button-reg {
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    padding: 10px 24px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.button-reg:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+}
+
+.button-login {
+    border: 2px solid var(--color-accent);
+    background: transparent;
+    color: var(--color-accent);
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.button-login:hover {
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+}
+
+.header-logo img {
+    display: block;
+}
+
+/*header block info*/
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-alt) 100%);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    margin: 0;
+    max-width: 100%;
+    border-radius: 0;
+}
+
+/*card block*/
+
+.card-container-title {
+    font-size: 32px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 50px;
+    color: var(--color-white);
+}
+
+.card-container {
+    margin-top: 40px;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 380px;
+    min-height: 320px;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    margin-bottom: 20px;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.card-title {
+    font-size: 20px;
+    color: var(--color-white);
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 14px;
+    color: var(--color-muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.button-rent,
+.button-info,
+.button-buy {
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: var(--shadow-btn);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 80%;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-rent:hover,
+.button-info:hover,
+.button-buy:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+/*conf block*/
+
+.conf {
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.conf-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    padding: 40px;
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+.conf-image {
+    flex: 1;
+    max-width: 500px;
+}
+
+.conf-images {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.conf-text {
+    flex: 1;
+}
+
+.conf-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--color-white);
+    line-height: 1.3;
+}
+
+.conf-text p {
+    margin-bottom: 20px;
+    color: var(--color-muted);
+    line-height: 1.6;
+}
+
+.conf-button {
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: var(--shadow-btn);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.conf-button:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+/*cart house*/
+
+.popular-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: var(--color-white);
+    text-align: center;
+}
+
+.popular-house {
+    text-align: center;
+    margin-bottom: 60px;
+    margin-top: 40px;
+}
+
+.house-content {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.card-house {
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    background-color: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-house-images {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    margin-bottom: 16px;
+    background-color: var(--color-bg);
+}
+
+.card-house-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 12px 0;
+    color: var(--color-white);
+}
+
+.house-price-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.house-price {
+    font-weight: 700;
+    color: var(--color-accent);
+    font-size: 18px;
+}
+
+.house-status {
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.house-info {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.house-info p {
+    flex: 1;
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+/*footer*/
+
+.footer {
+    border-radius: var(--border-radius-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 40px;
+    margin: 40px auto;
+    max-width: calc(var(--container-width) + var(--container-padding-x) * 2);
+    text-align: center;
+}
+
+.footer-form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-form h1 {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: var(--color-white);
+}
+
+.footer-form p {
+    font-size: 14px;
+    margin-bottom: 24px;
+    color: var(--color-muted);
+}
+
+.email-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.email-form input {
+    padding: 14px 18px;
+    font-size: 14px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    width: 300px;
+    background-color: var(--color-bg);
+    color: var(--color-white);
+}
+
+.email-form input::placeholder {
+    color: var(--color-muted);
+}
+
+.email-form button {
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: var(--shadow-btn);
+}
+
+.email-form button:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-card);
+}
+
+.modal-title {
+    font-size: 24px;
+    color: var(--color-white);
+    margin-bottom: 20px;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-form input,
+.modal-form textarea {
+    padding: 14px 18px;
+    font-size: 1em;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg);
+    color: var(--color-white);
+}
+
+.modal-form input[type="file"] {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.modal-form input[type="file"]::file-selector-button {
+    padding: 8px 16px;
+    font-size: 0.9em;
+    font-weight: 600;
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.modal-form input[type="file"]::file-selector-button:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+}
+
+.modal-form input::placeholder,
+.modal-form textarea::placeholder {
+    color: var(--color-muted);
+}
+
+.modal-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.modal-form button {
+    padding: 14px 28px;
+    font-size: 1em;
+    font-weight: 600;
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-form button:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--color-muted);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: var(--color-white);
+}
