@@ -40,13 +40,13 @@ npm install
 ```env
 # PostgreSQL Database URL
 # Замените postgres на ваш пароль
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/techstore?schema=public"
+DATABASE_URL="postgresql://postgres:ваш пароль@localhost:5432/techstore?ваше название"
 
 # Порт сервера
 PORT=5000
 
 # JWT настройки
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+JWT_SECRET=ваш секрет ключ
 JWT_EXPIRES_IN=7d
 
 # Администратор
